@@ -63,18 +63,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "file-watcher"
-version = "0.1.0"
-dependencies = [
- "colored",
- "notify",
- "notify-debouncer-mini",
- "serde",
- "serde_json",
- "serde_yaml",
-]
-
-[[package]]
 name = "filetime"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -100,6 +88,18 @@ name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
+
+[[package]]
+name = "hawk"
+version = "0.1.0"
+dependencies = [
+ "colored",
+ "notify",
+ "notify-debouncer-mini",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+]
 
 [[package]]
 name = "hermit-abi"

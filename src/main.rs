@@ -5,8 +5,8 @@ use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::fs;
 use std::path::Path;
 
-use file_watcher::config::{Config, Workspace};
-use file_watcher::log;
+use hawk::config::{Config, Workspace};
+use hawk::log;
 
 fn main() -> notify::Result<()> {
     let default_config_file: String = "config.yaml".to_string();
