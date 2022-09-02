@@ -1,0 +1,7 @@
+target: .github/workflows
+
+workspaces:
+  - name: my-app
+    path: ./packages/my-app/workflows
+  - name: my-second-app
+    path: ./packages/my-second-app/workflows
