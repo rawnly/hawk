@@ -3,7 +3,6 @@ use hawk::config::Config;
 use hawk::log;
 use hawk::watchers;
 use hawk::utils;
-use std::ffi::OsStr;
 use std::fs;
 
 use clap::Parser;
