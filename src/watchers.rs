@@ -4,10 +4,9 @@ use notify::event::{CreateKind, DataChange, ModifyKind, RenameMode};
 use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 
-use crate::utils;
 use crate::config::Workspace;
 use crate::log;
-
+use crate::utils;
 
 pub fn watch_config(path: &str) -> notify::Result<()> {
     let (tx, rx) = std::sync::mpsc::channel();
@@ -83,4 +82,3 @@ pub fn watch_sync(workspace: Workspace, target: &str) -> notify::Result<()> {
 
     Ok(())
 }
-

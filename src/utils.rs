@@ -1,5 +1,5 @@
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 
 pub fn copy_file(source: &Path, target_dir: &str, scope: &str) -> std::io::Result<()> {
     let filename = target_filename(source, target_dir, scope);

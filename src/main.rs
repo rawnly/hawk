@@ -1,8 +1,8 @@
 //! src/main.rs
 use hawk::config::Config;
 use hawk::log;
-use hawk::watchers;
 use hawk::utils;
+use hawk::watchers;
 use std::fs;
 
 use clap::Parser;
@@ -29,7 +29,11 @@ fn main() -> notify::Result<()> {
     let config_file: String = args.config.unwrap_or(default_config_file);
     let config = Config::load(&config_file).expect("Unable to parse configuration.");
 
-    println!("{} {}", "Loaded config file".dimmed(), config_file.dimmed().underline());
+    println!(
+        "{} {}",
+        "Loaded config file".dimmed(),
+        config_file.dimmed().underline()
+    );
 
     if !args.watch {
         let mut skipped = 0;
@@ -42,7 +46,12 @@ fn main() -> notify::Result<()> {
                 Err(e) => log::error("An error has occurred:", e),
             }
 
-            println!("Copying [{}]({}) to {}", workspace.name.blue(), workspace.path.underline().dimmed(), target.blue());
+            println!(
+                "Copying [{}]({}) to {}",
+                workspace.name.blue(),
+                workspace.path.underline().dimmed(),
+                target.blue()
+            );
             if let Ok(content) = fs::read_dir(&workspace.path) {
                 for f in content {
                     match f {
@@ -51,12 +60,21 @@ fn main() -> notify::Result<()> {
                                 if path.path().is_file() && is_yaml(filename) {
                                     utils::copy_file(&path.path(), &target, &workspace.name)?
                                 } else {
-                                    println!("Skipping: {:?} {}", path.path().display(), path.path().file_name().unwrap().to_str().unwrap().ends_with("yml"));
+                                    println!(
+                                        "Skipping: {:?} {}",
+                                        path.path().display(),
+                                        path.path()
+                                            .file_name()
+                                            .unwrap()
+                                            .to_str()
+                                            .unwrap()
+                                            .ends_with("yml")
+                                    );
                                     skipped += 1;
                                 }
                             }
                         }
-                        Err(err) => println!("failed to copy: {}", err)
+                        Err(err) => println!("failed to copy: {}", err),
                     }
                 }
             }
