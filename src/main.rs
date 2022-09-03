@@ -17,14 +17,18 @@ struct CopyFlags {
 
 #[derive(clap::Subcommand, Debug)]
 enum Action {
+    /// Delete generated files
     Clean,
+
+    /// Copy files to the `target` directory (specified in the config)
     Copy(CopyFlags),
 }
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
 struct Args {
-    #[clap(short, long, value_parser)]
+    /// Specify the config file path
+    #[clap(short, long, value_parser, value_hint = clap::ValueHint::FilePath)]
     config: Option<String>,
 
     #[clap(subcommand)]
