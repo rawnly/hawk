@@ -69,7 +69,7 @@ fn main() -> notify::Result<()> {
                     workspace.name.blue(),
                     workspace.path.underline().dimmed(),
                     target.blue()
-                    );
+                );
                 copy_workspace_files(&mut workspace, &target)?;
             }
         }
@@ -107,7 +107,7 @@ fn main() -> notify::Result<()> {
                     }
                 }
             }
-        },
+        }
         Some(Action::Copy(f)) => {
             let handle = std::thread::spawn(move || {
                 if !f.watch {
@@ -144,38 +144,30 @@ fn main() -> notify::Result<()> {
     Ok(())
 }
 
-
 fn copy_workspace_files(workspace: &mut Workspace, target: &str) -> notify::Result<()> {
     let mut skipped = 0;
-
 
     if let Ok(content) = fs::read_dir(&workspace.path) {
         for f in content {
             match f {
                 Ok(path) => {
-                    if let Some(filename) =
-                        path.path().file_name().unwrap().to_str()
-                        {
-                            if path.path().is_file() && is_yaml(filename) {
-                                utils::copy_file(
-                                    &path.path(),
-                                    target,
-                                    &workspace.name,
-                                    )?
-                            } else {
-                                println!(
-                                    "Skipping: {:?} {}",
-                                    path.path().display(),
-                                    path.path()
+                    if let Some(filename) = path.path().file_name().unwrap().to_str() {
+                        if path.path().is_file() && is_yaml(filename) {
+                            utils::copy_file(&path.path(), target, &workspace.name)?
+                        } else {
+                            println!(
+                                "Skipping: {:?} {}",
+                                path.path().display(),
+                                path.path()
                                     .file_name()
                                     .unwrap()
                                     .to_str()
                                     .unwrap()
                                     .ends_with("yml")
-                                    );
-                                skipped += 1;
-                            }
+                            );
+                            skipped += 1;
                         }
+                    }
                 }
                 Err(err) => println!("failed to copy: {}", err),
             }
