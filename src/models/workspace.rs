@@ -1,28 +1,28 @@
-use colored::Colorize;
+use colored::*;
 use serde::Deserialize;
 use std::fmt;
 use std::fs;
 
 use crate::log;
 
-#[derive(Debug, Deserialize)]
-pub struct Workspace {
+#[derive(Debug, Clone, Deserialize)]
+pub struct PackageJson {
     pub name: String,
-    pub path: String,
-    pub package_json: Option<String>,
 }
 
 pub type Result<T> = std::result::Result<T, WorkspaceError>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum WorkspaceError {
     InvalidName(String),
     InvalidPath(String),
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub struct PackageJson {
+#[derive(Debug, Deserialize)]
+pub struct Workspace {
     pub name: String,
+    pub path: String,
+    pub package_json: Option<String>,
 }
 
 impl fmt::Display for WorkspaceError {
@@ -81,24 +81,3 @@ impl Workspace {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Config {
-    pub workspaces: Vec<Workspace>,
-    pub target: String,
-}
-
-impl Config {
-    pub fn load(filepath: &str) -> serde_yaml::Result<Config> {
-        let f = fs::File::open(filepath).expect("Unable to open file");
-        serde_yaml::from_reader(f)
-    }
-
-    pub fn validate_workspaces(&self) -> Result<()> {
-        for workspace in &self.workspaces {
-            workspace.validate_name()?;
-            workspace.validate_path()?;
-        }
-
-        Ok(())
-    }
-}

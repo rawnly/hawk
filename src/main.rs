@@ -1,8 +1,8 @@
 //! src/main.rs
-use hawk::config::Config;
 use hawk::log;
 use hawk::utils;
 use hawk::watchers;
+use hawk::models::config::Config;
 use std::fs;
 
 use clap::Parser;
@@ -25,9 +25,15 @@ fn is_yaml(path: &str) -> bool {
 fn main() -> notify::Result<()> {
     let args = Args::parse();
 
-    let default_config_file: String = "config.yaml".to_string();
+    let default_config_file: String = "hawk-config.yaml".to_string();
     let config_file: String = args.config.unwrap_or(default_config_file);
-    let config = Config::load(&config_file).expect("Unable to parse configuration.");
+
+    if !std::path::Path::new(&config_file).exists() {
+        println!("Canot find a valid config file ({})", config_file.underline().blue());
+        return Ok(());
+    }
+
+    let config = Config::load(&config_file).expect("Could not read config file");
 
     println!(
         "{} {}",

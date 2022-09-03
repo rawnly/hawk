@@ -4,7 +4,7 @@ use notify::event::{CreateKind, DataChange, ModifyKind, RenameMode};
 use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 
-use crate::config::Workspace;
+use crate::models::workspace::Workspace;
 use crate::log;
 use crate::utils;
 
