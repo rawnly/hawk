@@ -26,9 +26,26 @@ example
             └── deploy.yml
 ```
 
+```bash
+    $ cd example
+    $ hawk -w
+    ... let the magic happen
+```
+
+## Why
+
 Github actions won't let you store workflows files inside subfolders, neither in your `.github/workflows/` folder or project custom folders.
 To solve that I made `hawk`. It lets you copy workflows from custom paths and paste them with a prefix, handling most of the pain.
 With 10 lines config you have a working monorepo setup.
+
+## Installation
+
+Until release installation is only available from source code. Make sure to have your rust environment ready, then:
+
+- Clone the repo
+- Run `cargo build -r` or `make build`
+- Copy `target/release/hawk` to your path or use `sudo make install` (it will copy the bin into `/usr/local/bin`)
+- Enjoy
 
 ## Features
 
