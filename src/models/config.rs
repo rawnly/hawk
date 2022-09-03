@@ -11,7 +11,7 @@ pub type Result<T> = std::result::Result<T, ConfigError>;
 pub enum ConfigError {
     YamlError(serde_yaml::Error),
     FileNotFound,
-    Any
+    Any,
 }
 
 impl fmt::Display for ConfigError {
@@ -41,7 +41,7 @@ impl Config {
         }
 
         let f = fs::File::open(filepath).expect("Unable to open file");
-        
+
         match serde_yaml::from_reader(f) {
             Ok(data) => Ok(data),
             Err(e) => Err(ConfigError::YamlError(e)),

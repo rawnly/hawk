@@ -4,8 +4,8 @@ use notify::event::{CreateKind, DataChange, ModifyKind, RenameMode};
 use notify::{EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 
-use crate::models::workspace::Workspace;
 use crate::log;
+use crate::models::workspace::Workspace;
 use crate::utils;
 
 pub fn watch_config(path: &str) -> notify::Result<()> {
