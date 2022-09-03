@@ -60,6 +60,12 @@ fn main() -> notify::Result<()> {
                     log::error("An error has occurred:", e);
                 }
 
+                println!(
+                    "Copying [{}]({}) to {}",
+                    workspace.name.blue(),
+                    workspace.path.underline().dimmed(),
+                    target.blue()
+                    );
                 copy_workspace_files(&mut workspace, &target)?;
             }
         }
@@ -119,7 +125,6 @@ fn main() -> notify::Result<()> {
                 copy_workspace_files(&mut workspace, &target)?;
 
                 if f.watch {
-                    println!("\n");
                     std::thread::spawn(move || {
                         if let Err(err) = watchers::watch_sync(workspace, &target) {
                             log::error("Something went wrong:", err)
@@ -139,12 +144,6 @@ fn main() -> notify::Result<()> {
 fn copy_workspace_files(workspace: &mut Workspace, target: &str) -> notify::Result<()> {
     let mut skipped = 0;
 
-    println!(
-        "Copying [{}]({}) to {}",
-        workspace.name.blue(),
-        workspace.path.underline().dimmed(),
-        target.blue()
-        );
 
     if let Ok(content) = fs::read_dir(&workspace.path) {
         for f in content {
