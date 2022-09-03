@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
   push:
     paths-ignore:
-      - **.md
-      - Makefile 
-      - .idea/**/*
+      - "**.md"
+      - "Makefile"
+      - ".idea/**/*"
   pull_request:
     paths-ignore:
-      - **.md
-      - Makefile 
-      - .idea/**/*
+      - "**.md"
+      - "Makefile"
+      - ".idea/**/*"
 
 jobs:
   check:
@@ -28,7 +28,7 @@ jobs:
         with:
           command: check
   fmt:
-    name: FMT 
+    name: FMT
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,8 +40,8 @@ jobs:
       - run: rustup component add rustfmt
       - uses: actions-rs/cargo@v1
         with:
-          command: fmt 
-          args: --all -- --check 
+          command: fmt
+          args: --all -- --check
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
