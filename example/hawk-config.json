@@ -1,0 +1,14 @@
+{
+  "target": ".github/workflows",
+  "workspaces": [
+    {
+      "name": "my-app",
+      "path": "./packages/my-app/workflows",
+      "package_json": "./packages/my-app"
+    },
+    {
+      "name": "my-second-app",
+      "path": "./pacakges/my-second-app/workflows"
+    }
+  ]
+}
