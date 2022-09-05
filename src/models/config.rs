@@ -1,18 +1,12 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fs;
 use std::path::Path;
 
-use crate::models::workspace;
+use crate::models::environment_files::{list_dirs, search_file, PackageJson, PnpmWorkspace};
 use crate::models::files;
 use crate::models::files::File;
-use crate::models::environment_files::{
-    PackageJson,
-    PnpmWorkspace,
-    search_file,
-    list_dirs,
-};
-
+use crate::models::workspace;
 
 pub type Result<T> = std::result::Result<T, ConfigError>;
 
@@ -44,7 +38,7 @@ pub struct Config {
 }
 
 impl Config {
-    #[deprecated(since = "1.0.3")] 
+    #[deprecated(since = "1.0.3")]
     pub fn load_old(filepath: &str) -> Result<Config> {
         if !Path::new(filepath).exists() {
             return Err(ConfigError::FileNotFound);
@@ -58,7 +52,7 @@ impl Config {
         }
     }
 
-    #[deprecated(since = "1.0.3")] 
+    #[deprecated(since = "1.0.3")]
     pub fn validate_workspaces(&self) -> workspace::Result<()> {
         for workspace in &self.workspaces {
             workspace.validate_name()?;
@@ -78,7 +72,7 @@ impl Config {
     /// Initialize config reading workspaces from package.json or `pnpm-workspace` if available.
     /// `pnpm-workspace` has priority over package.json workspaces key.
     pub fn init(target: &str) -> files::Result<Config> {
-        let mut config = Config::new(target); 
+        let mut config = Config::new(target);
         let package_json_path = search_file(".", "package.json");
         let pnpm_workspace_path = search_file(".", "pnpm-workspace.yaml");
 
@@ -114,8 +108,10 @@ impl Config {
     }
 }
 
-
-fn add_workspaces(workspaces: &mut Vec<workspace::Workspace>, directory: &Path) -> files::Result<()> {
+fn add_workspaces(
+    workspaces: &mut Vec<workspace::Workspace>,
+    directory: &Path,
+) -> files::Result<()> {
     for dir in list_dirs(directory) {
         if search_file(dir.to_str().unwrap(), "package.json").is_some() {
             let pkg = PackageJson::load(dir.as_path())?;
@@ -123,7 +119,7 @@ fn add_workspaces(workspaces: &mut Vec<workspace::Workspace>, directory: &Path) 
             let wk = workspace::Workspace {
                 name: pkg.name,
                 package_json: Some(dir.to_str().unwrap().into()),
-                path: directory.to_str().unwrap_or_default().into()
+                path: directory.to_str().unwrap_or_default().into(),
             };
 
             workspaces.push(wk);

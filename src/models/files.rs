@@ -1,5 +1,5 @@
-use std::{ fs, io, path::Path };
 use serde::{de, Serialize};
+use std::{fs, io, path::Path};
 
 pub type Result<T> = std::result::Result<T, FileError>;
 
@@ -9,7 +9,7 @@ struct PackageJsonError;
 #[derive(Debug, Clone)]
 pub enum FileKind {
     JSON,
-    YAML
+    YAML,
 }
 
 impl FileKind {
@@ -17,14 +17,14 @@ impl FileKind {
         match p.extension().unwrap().to_str().unwrap() {
             "json" => Ok(FileKind::JSON),
             "yml" | "yaml" => Ok(FileKind::YAML),
-            _ => Err(FileError::UnsupportedExtension)
+            _ => Err(FileError::UnsupportedExtension),
         }
     }
 }
 
-
-pub trait File<T> 
-where T: de::DeserializeOwned 
+pub trait File<T>
+where
+    T: de::DeserializeOwned,
 {
     /// Reads file from filesystem. It must be json or yaml.
     fn load(path: &Path) -> Result<T> {
@@ -35,18 +35,19 @@ where T: de::DeserializeOwned
 
         match kind {
             FileKind::JSON => match serde_json::from_reader(r) {
-                    Ok(d) => Ok(d),
-                    Err(e) => Err(FileError::from(e))
-                }
+                Ok(d) => Ok(d),
+                Err(e) => Err(FileError::from(e)),
+            },
             FileKind::YAML => match serde_yaml::from_reader(r) {
-                    Ok(d) => Ok(d),
-                    Err(e) => Err(FileError::from(e))
-                }
+                Ok(d) => Ok(d),
+                Err(e) => Err(FileError::from(e)),
+            },
         }
     }
 
-    fn write(&self, path: &Path) -> Result<()> 
-    where Self: Serialize 
+    fn write(&self, path: &Path) -> Result<()>
+    where
+        Self: Serialize,
     {
         let r = fs::File::create(path)?;
         let kind = FileKind::from_path(path)?;
@@ -66,7 +67,7 @@ pub enum FileError {
     UnsupportedExtension,
     InvalidYAMLSyntax(serde_yaml::Error),
     InvalidJSONSyntax(serde_json::Error),
-    IO(io::Error)
+    IO(io::Error),
 }
 
 impl From<serde_json::Error> for FileError {
@@ -83,9 +84,9 @@ impl From<serde_yaml::Error> for FileError {
 
 impl From<io::Error> for FileError {
     fn from(e: io::Error) -> Self {
-       match e.kind() {
-           io::ErrorKind::NotFound => FileError::NotFound,
-           _ => FileError::IO(e)
-       } 
+        match e.kind() {
+            io::ErrorKind::NotFound => FileError::NotFound,
+            _ => FileError::IO(e),
+        }
     }
 }

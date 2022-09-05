@@ -1,32 +1,30 @@
 //! src/main.rs
-use hawk::log;
-use hawk::models::files::File;
-use hawk::models::config::Config;
-use hawk::watchers;
 use hawk::actions;
-use hawk::cli::{Args, Action};
+use hawk::cli::{Action, Args};
+use hawk::log;
+use hawk::models::config::Config;
+use hawk::models::files::File;
+use hawk::watchers;
 
-use std::path::Path;
 use clap::Parser;
 use colored::*;
+use std::path::Path;
 
 fn get_config_path(args: Args) -> String {
     let default_config_file: String = "hawk-config.yaml".to_string();
     args.config.unwrap_or(default_config_file)
 }
 
-
-
 fn main() -> notify::Result<()> {
     let args = Args::parse();
     let config_file = get_config_path(args.clone());
     let path = Path::new(&config_file);
 
-    if !matches!(args.action, Some(Action::Init(_)))  && !path.exists() {
+    if !matches!(args.action, Some(Action::Init(_))) && !path.exists() {
         println!(
             "Canot find a valid config file ({})",
             config_file.underline().blue()
-            );
+        );
 
         return Ok(());
     }
@@ -48,7 +46,7 @@ fn main() -> notify::Result<()> {
                     workspace.path.underline().dimmed(),
                     target.blue()
                 );
-                
+
                 actions::copy(&workspace, &target)?;
             }
         }
@@ -102,9 +100,8 @@ fn main() -> notify::Result<()> {
             }
 
             handle.join().unwrap();
-        },
+        }
     }
 
     Ok(())
 }
-
