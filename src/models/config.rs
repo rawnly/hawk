@@ -76,8 +76,6 @@ impl Config {
         let package_json_path = search_file(".", "package.json");
         let pnpm_workspace_path = search_file(".", "pnpm-workspace.yaml");
 
-        dbg!(&package_json_path, &pnpm_workspace_path);
-
         if pnpm_workspace_path.is_some() {
             let mut workspaces: Vec<workspace::Workspace> = Vec::new();
             let pnpm_workspace: PnpmWorkspace = PnpmWorkspace::load(&pnpm_workspace_path.unwrap())?;
@@ -114,7 +112,6 @@ impl Config {
             config.workspaces = workspaces;
         }
 
-        dbg!(config.clone());
         Ok(config)
     }
 }
@@ -125,9 +122,7 @@ fn add_workspaces(
     workflows_dir: &str,
 ) -> files::Result<()> {
     for dir in list_dirs(directory) {
-        dbg!(&dir, &directory);
         if search_file(dir.to_str().unwrap(), "package.json").is_some() {
-            dbg!(dir.join("package.json"));
             let pkg = PackageJson::load(dir.join("package.json").as_path())
                 .expect("could not find package json");
 

@@ -12,3 +12,5 @@ pub fn error<E: std::fmt::Debug>(message: &str, err: E) {
         err
     )
 }
+
+// TODO: write a custom macro and wrap the default `dbg!()` behaviour.
