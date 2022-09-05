@@ -9,8 +9,6 @@ use crate::models::workspace::Workspace;
 use crate::utils;
 
 pub fn init(flags: &InitFlags) -> files::Result<Config> {
-    dbg!(flags);
-
     let mut config_path = Path::new("hawk-config.yaml").to_path_buf();
 
     if flags.json {
