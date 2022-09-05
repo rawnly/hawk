@@ -28,3 +28,8 @@ pub fn to_void_result<T>(r: std::io::Result<T>) -> std::io::Result<()> {
         Err(e) => Err(e),
     }
 }
+
+
+pub fn is_yaml(path: &str) -> bool {
+    path.ends_with("yml") || path.ends_with("yaml")
+}
