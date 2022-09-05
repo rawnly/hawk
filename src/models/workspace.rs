@@ -15,7 +15,7 @@ pub enum WorkspaceError {
     InvalidPath(String),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Workspace {
     pub name: String,
     pub path: String,

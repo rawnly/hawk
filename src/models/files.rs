@@ -52,6 +52,8 @@ where
         let r = fs::File::create(path)?;
         let kind = FileKind::from_path(path)?;
 
+        dbg!(path);
+
         match kind {
             FileKind::JSON => serde_json::to_writer_pretty(r, self)?,
             FileKind::YAML => serde_yaml::to_writer(r, self)?,
