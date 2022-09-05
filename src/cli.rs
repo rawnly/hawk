@@ -23,7 +23,7 @@ pub struct InitFlags {
     pub target: Option<String>,
 }
 
-#[derive(clap::Subcommand, Debug)]
+#[derive(clap::Subcommand, Clone, Debug)]
 pub enum Action {
     /// Delete generated files
     Clean,
@@ -35,7 +35,7 @@ pub enum Action {
     Copy(CopyFlags),
 }
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Clone, Debug)]
 #[clap(author, version, about)]
 pub struct Args {
     /// Specify the config file path
