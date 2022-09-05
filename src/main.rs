@@ -10,26 +10,31 @@ use std::path::Path;
 use clap::Parser;
 use colored::*;
 
+fn get_config_path(args: Args) -> String {
+    let default_config_file: String = "hawk-config.yaml".to_string();
+    args.config.unwrap_or(default_config_file)
+}
+
+
+
 fn main() -> notify::Result<()> {
     let args = Args::parse();
-
-    let default_config_file: String = "hawk-config.yaml".to_string();
-    let config_file: String = args.config.unwrap_or(default_config_file);
-
+    let config_file = get_config_path(args.clone());
     let path = Path::new(&config_file);
 
-    if !path.exists() {
+    if !matches!(args.action, Some(Action::Init(_)))  && !path.exists() {
         println!(
             "Canot find a valid config file ({})",
             config_file.underline().blue()
-        );
+            );
+
         return Ok(());
     }
 
-    let config: Config = Config::load(path).expect("Could not read config file");
-
     match args.action {
         None => {
+            let config: Config = Config::load(path).expect("Could not read config file");
+
             for mut workspace in config.workspaces {
                 let target = config.target.clone();
 
@@ -53,6 +58,8 @@ fn main() -> notify::Result<()> {
             }
         }
         Some(Action::Clean) => {
+            let config: Config = Config::load(path).expect("Could not read config file");
+
             for mut workspace in config.workspaces {
                 let target = config.target.clone();
 
@@ -64,6 +71,8 @@ fn main() -> notify::Result<()> {
             }
         }
         Some(Action::Copy(f)) => {
+            let config: Config = Config::load(path).expect("Could not read config file");
+
             let handle = std::thread::spawn(move || {
                 if !f.watch {
                     return;
