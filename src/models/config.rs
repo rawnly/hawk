@@ -31,7 +31,7 @@ impl fmt::Display for ConfigError {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Config {
     pub workspaces: Vec<workspace::Workspace>,
     pub target: String,
@@ -71,17 +71,23 @@ impl Config {
 
     /// Initialize config reading workspaces from package.json or `pnpm-workspace` if available.
     /// `pnpm-workspace` has priority over package.json workspaces key.
-    pub fn init(target: &str) -> files::Result<Config> {
+    pub fn init(target: &str, workflows_dir: &str) -> files::Result<Config> {
         let mut config = Config::new(target);
         let package_json_path = search_file(".", "package.json");
         let pnpm_workspace_path = search_file(".", "pnpm-workspace.yaml");
+
+        dbg!(&package_json_path, &pnpm_workspace_path);
 
         if pnpm_workspace_path.is_some() {
             let mut workspaces: Vec<workspace::Workspace> = Vec::new();
             let pnpm_workspace: PnpmWorkspace = PnpmWorkspace::load(&pnpm_workspace_path.unwrap())?;
 
             for el in pnpm_workspace.packages {
-                add_workspaces(&mut workspaces, Path::new(&el))?;
+                add_workspaces(
+                    &mut workspaces,
+                    Path::new(&format!("./{}", el.replace("/*", ""))),
+                    workflows_dir,
+                )?;
             }
 
             config.workspaces = workspaces;
@@ -98,12 +104,17 @@ impl Config {
             }
 
             for el in package_json.workspaces.unwrap() {
-                add_workspaces(&mut workspaces, Path::new(&el))?;
+                add_workspaces(
+                    &mut workspaces,
+                    Path::new(&format!("./{}", el.replace("/*", ""))),
+                    workflows_dir,
+                )?;
             }
 
             config.workspaces = workspaces;
         }
 
+        dbg!(config.clone());
         Ok(config)
     }
 }
@@ -111,18 +122,28 @@ impl Config {
 fn add_workspaces(
     workspaces: &mut Vec<workspace::Workspace>,
     directory: &Path,
+    workflows_dir: &str,
 ) -> files::Result<()> {
     for dir in list_dirs(directory) {
+        dbg!(&dir, &directory);
         if search_file(dir.to_str().unwrap(), "package.json").is_some() {
-            let pkg = PackageJson::load(dir.as_path())?;
+            dbg!(dir.join("package.json"));
+            let pkg = PackageJson::load(dir.join("package.json").as_path())
+                .expect("could not find package json");
 
             let wk = workspace::Workspace {
                 name: pkg.name,
                 package_json: Some(dir.to_str().unwrap().into()),
-                path: directory.to_str().unwrap_or_default().into(),
+                path: dir.join(workflows_dir).to_str().unwrap_or_default().into(),
             };
 
             workspaces.push(wk);
+        } else {
+            workspaces.push(workspace::Workspace {
+                name: dir.file_stem().unwrap().to_str().unwrap().into(),
+                package_json: None,
+                path: dir.join(workflows_dir).to_str().unwrap_or_default().into(),
+            });
         }
     }
 

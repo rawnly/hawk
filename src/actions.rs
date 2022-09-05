@@ -9,26 +9,26 @@ use crate::models::workspace::Workspace;
 use crate::utils;
 
 pub fn init(flags: &InitFlags) -> files::Result<Config> {
-    dbg!("FLAGS", flags);
+    dbg!(flags);
 
     let mut config_path = Path::new("hawk-config.yaml").to_path_buf();
-    let target = flags
-        .clone()
-        .target
-        .unwrap_or_else(|| ".github/workflows".to_string());
 
     if flags.json {
         config_path = config_path.with_extension("json");
     }
 
     if flags.read_env {
-        let config = Config::init(&target)?;
+        let wk_target = flags
+            .clone()
+            .workflows
+            .unwrap_or_else(|| ".github/workflows".into());
+        let config = Config::init(".github/workflows", &wk_target)?;
         config.write(config_path.as_path())?;
 
         return Ok(config);
     }
 
-    let config = Config::new(&target);
+    let config = Config::new(".github/workflows");
     config.write(config_path.as_path())?;
 
     Ok(config)

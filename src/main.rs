@@ -52,7 +52,7 @@ fn main() -> notify::Result<()> {
         }
         Some(Action::Init(f)) => {
             if let Err(err) = actions::init(&f) {
-                log::error("An error has occurred", err)
+                log::error("An init error has occurred", err)
             }
         }
         Some(Action::Clean) => {

@@ -17,9 +17,9 @@ pub struct InitFlags {
     #[clap(short, long, value_parser, default_value_t = false)]
     pub read_env: bool,
 
-    /// Choose the destination folder
+    /// Workflows directory path (Default: .github/workflows)
     #[clap(long, value_parser)]
-    pub target: Option<String>,
+    pub workflows: Option<String>,
 }
 
 #[derive(clap::Subcommand, Clone, Debug)]
