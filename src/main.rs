@@ -10,14 +10,13 @@ use clap::Parser;
 use colored::*;
 use std::path::Path;
 
-fn get_config_path(args: Args) -> String {
-    let default_config_file: String = "hawk-config.yaml".to_string();
-    args.config.unwrap_or(default_config_file)
-}
-
 fn main() -> notify::Result<()> {
     let args = Args::parse();
-    let config_file = get_config_path(args.clone());
+    let config_file = match args.config {
+        Some(c) => c,
+        None => "hawk-config.yaml".into(),
+    };
+
     let path = Path::new(&config_file);
 
     if !matches!(args.action, Some(Action::Init(_))) && !path.exists() {
@@ -33,21 +32,22 @@ fn main() -> notify::Result<()> {
         None => {
             let config: Config = Config::load(path).expect("Could not read config file");
 
-            for mut workspace in config.workspaces {
-                let target = config.target.clone();
-
-                if let Err(e) = workspace.load_name_if_possible() {
-                    log::error("An error has occurred:", e);
+            for workspace in config.workspaces {
+                if let Some(scope) = &args.scope {
+                    if scope != &workspace.name {
+                        dbg!(scope, &workspace.name);
+                        continue;
+                    }
                 }
 
                 println!(
                     "Copying [{}]({}) to {}",
                     workspace.name.blue(),
                     workspace.path.underline().dimmed(),
-                    target.blue()
+                    config.target.blue()
                 );
 
-                actions::copy(&workspace, &target)?;
+                actions::copy(&workspace, &config.target)?;
             }
         }
         Some(Action::Init(f)) => {
@@ -58,14 +58,15 @@ fn main() -> notify::Result<()> {
         Some(Action::Clean) => {
             let config: Config = Config::load(path).expect("Could not read config file");
 
-            for mut workspace in config.workspaces {
-                let target = config.target.clone();
-
-                if let Err(e) = workspace.load_name_if_possible() {
-                    log::error("An error has occurred:", e);
+            for workspace in config.workspaces {
+                if let Some(scope) = &args.scope {
+                    if scope != &workspace.name {
+                        dbg!(scope, &workspace.name);
+                        continue;
+                    }
                 }
 
-                actions::clean(workspace, &target)?;
+                actions::clean(workspace, &config.target)?;
             }
         }
         Some(Action::Copy(f)) => {
@@ -81,12 +82,15 @@ fn main() -> notify::Result<()> {
                 }
             });
 
-            for mut workspace in config.workspaces {
-                let target = config.target.clone();
-
-                if let Err(e) = workspace.load_name_if_possible() {
-                    log::error("An error has occurred:", e);
+            for workspace in config.workspaces {
+                if let Some(scope) = &args.scope {
+                    if scope != &workspace.name {
+                        dbg!(scope, &workspace.name);
+                        continue;
+                    }
                 }
+
+                let target = config.target.clone();
 
                 actions::copy(&workspace, &target)?;
 
