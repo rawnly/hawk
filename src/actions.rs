@@ -50,16 +50,15 @@ pub fn clean(workspace: Workspace, target: &str) -> std::io::Result<()> {
         for file in files {
             match file {
                 Ok(f) => {
-                    if let Some(filename) = f.path().file_name().unwrap().to_str() {
-                        if utils::is_workflow_file(Path::new(filename)) {
-                            utils::remove_file(&f.path(), target, &workspace.name)?;
-                            println!(
-                                "Removing {}",
-                                utils::target_filename(&f.path(), target, &workspace.name)
-                                    .underline()
-                                    .blue()
+                    if utils::is_workflow_file(&f.path()) {
+                        utils::remove_file(&f.path(), target, &workspace.name)?;
+
+                        println!(
+                            "Removing {}",
+                            utils::target_filename(&f.path(), target, &workspace.name)
+                            .underline()
+                            .blue()
                             );
-                        }
                     }
                 }
                 Err(err) => println!("Failed to delete file: {}", err),
@@ -77,22 +76,17 @@ pub fn copy(workspace: &Workspace, target: &str) -> notify::Result<()> {
         for f in content {
             match f {
                 Ok(path) => {
-                    if let Some(filename) = path.path().file_name().unwrap().to_str() {
-                        if utils::is_workflow_file(Path::new(filename)) {
-                            utils::copy_file(&path.path(), target, &workspace.name)?
-                        } else {
-                            println!(
-                                "Skipping: {:?} {}",
-                                path.path().display(),
-                                path.path()
-                                    .file_name()
-                                    .unwrap()
-                                    .to_str()
-                                    .unwrap()
-                                    .ends_with("yml")
+                    let is_workflow = utils::is_workflow_file(&path.path());
+
+                    if is_workflow {
+                        utils::copy_file(&path.path(), target, &workspace.name)?
+                    } else {
+                        println!(
+                            "Skipping: {:?} {}",
+                            path.path().display(),
+                            is_workflow
                             );
-                            skipped += 1;
-                        }
+                        skipped += 1;
                     }
                 }
                 Err(err) => println!("failed to copy: {}", err),
