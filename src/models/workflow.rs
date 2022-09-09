@@ -1,5 +1,5 @@
-use serde::Deserialize;
 use crate::models::files::*;
+use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Workflow {
@@ -7,4 +7,3 @@ pub struct Workflow {
 }
 
 impl File<Workflow> for Workflow {}
-

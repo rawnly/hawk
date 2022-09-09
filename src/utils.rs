@@ -1,7 +1,7 @@
+use crate::models::files::File;
+use crate::models::workflow::Workflow;
 use std::fs;
 use std::path::Path;
-use crate::models::workflow::Workflow;
-use crate::models::files::File;
 
 pub fn copy_file(source: &Path, target_dir: &str, scope: &str) -> std::io::Result<()> {
     let filename = target_filename(source, target_dir, scope);
@@ -41,7 +41,7 @@ pub fn is_yaml(path: &str) -> bool {
 pub fn is_workflow_file(filepath: &Path) -> bool {
     let is_yaml = match filepath.extension() {
         None => false,
-        Some(ext) => ext.eq("yaml") || ext.eq("yml")
+        Some(ext) => ext.eq("yaml") || ext.eq("yml"),
     };
 
     if let Err(err) = Workflow::load(filepath) {
