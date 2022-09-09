@@ -14,6 +14,10 @@ pub enum FileKind {
 
 impl FileKind {
     pub fn from_path(p: &Path) -> std::result::Result<FileKind, FileError> {
+        if !p.is_file() || p.extension().is_none() {
+            return Err(FileError::UnsupportedExtension);
+        }
+
         match p.extension().unwrap().to_str().unwrap() {
             "json" => Ok(FileKind::JSON),
             "yml" | "yaml" => Ok(FileKind::YAML),

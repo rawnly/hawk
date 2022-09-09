@@ -1,12 +1,25 @@
 use colored::*;
-use std::{fs, path::Path};
+use std::path::Path;
+use std::fs;
 
 use crate::cli::InitFlags;
 use crate::models::config::Config;
+use crate::models::environment_files::list_files;
 use crate::models::files;
 use crate::models::files::*;
+use crate::models::workflow::Workflow;
 use crate::models::workspace::Workspace;
 use crate::utils;
+
+pub fn list(workspace: &Workspace, target: &str) {
+    list_files(Path::new(target))
+        .iter()
+        .filter(|f| utils::is_workflow_file(*f) && f.file_name().unwrap().to_str().unwrap_or("").starts_with(&workspace.name))
+        .map(|f| (Workflow::load(f).unwrap(), f.file_name().unwrap().to_str().unwrap_or("")))
+        .for_each(|(w, p)| {
+            println!("{}: {}", w.name.bold().cyan(), p);
+        })
+}
 
 pub fn init(flags: &InitFlags) -> files::Result<Config> {
     let mut config_path = Path::new("hawk-config.yaml").to_path_buf();
@@ -38,7 +51,7 @@ pub fn clean(workspace: Workspace, target: &str) -> std::io::Result<()> {
             match file {
                 Ok(f) => {
                     if let Some(filename) = f.path().file_name().unwrap().to_str() {
-                        if f.path().exists() && f.path().is_file() && utils::is_yaml(filename) {
+                        if utils::is_workflow_file(Path::new(filename)) {
                             utils::remove_file(&f.path(), target, &workspace.name)?;
                             println!(
                                 "Removing {}",
@@ -65,7 +78,7 @@ pub fn copy(workspace: &Workspace, target: &str) -> notify::Result<()> {
             match f {
                 Ok(path) => {
                     if let Some(filename) = path.path().file_name().unwrap().to_str() {
-                        if path.path().is_file() && utils::is_yaml(filename) {
+                        if utils::is_workflow_file(Path::new(filename)) {
                             utils::copy_file(&path.path(), target, &workspace.name)?
                         } else {
                             println!(
