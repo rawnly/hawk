@@ -30,8 +30,11 @@ pub enum Action {
     /// Initialize a repository.
     Init(InitFlags),
 
-    /// Copy files to the `target` directory (specified in the config)
+    /// Copy files to the `target` directory
     Copy(CopyFlags),
+
+    /// List workflows in the `target` directory
+    List,
 }
 
 #[derive(Parser, Clone, Debug)]
@@ -44,6 +47,8 @@ pub struct Args {
     #[clap(subcommand)]
     pub action: Option<Action>,
 
+    /// Specify which workspaces files copy / watch
+    /// Usage: --scope <workspace-name>
     #[clap(long, value_parser, global = true)]
     pub scope: Option<String>,
 }

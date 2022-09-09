@@ -35,7 +35,6 @@ fn main() -> notify::Result<()> {
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
-                        dbg!(scope, &workspace.name);
                         continue;
                     }
                 }
@@ -61,12 +60,25 @@ fn main() -> notify::Result<()> {
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
-                        dbg!(scope, &workspace.name);
                         continue;
                     }
                 }
 
                 actions::clean(workspace, &config.target)?;
+            }
+        }
+        Some(Action::List) => {
+            let config: Config = Config::load(path).expect("Could not read config file");
+            let target = &config.target;
+
+            for workspace in &config.workspaces {
+                if let Some(scope) = &args.scope {
+                    if scope != &workspace.name {
+                        continue;
+                    }
+                }
+
+                actions::list(workspace, target);
             }
         }
         Some(Action::Copy(f)) => {
@@ -85,7 +97,6 @@ fn main() -> notify::Result<()> {
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
-                        dbg!(scope, &workspace.name);
                         continue;
                     }
                 }
