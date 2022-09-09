@@ -37,11 +37,16 @@ pub fn is_yaml(path: &str) -> bool {
 }
 
 // checks if the given filepath is a valid workflow file
-pub fn is_workflow_file(path: &Path) -> bool {
-    let is_yaml = match path.extension() {
+// path must be the entire filepath
+pub fn is_workflow_file(filepath: &Path) -> bool {
+    let is_yaml = match filepath.extension() {
         None => false,
         Some(ext) => ext.eq("yaml") || ext.eq("yml")
     };
 
-    Workflow::load(path).is_ok() && is_yaml
+    if let Err(err) = Workflow::load(filepath) {
+        panic!("[{}] An error has occurred: {}", filepath.display(), err);
+    }
+
+    is_yaml
 }

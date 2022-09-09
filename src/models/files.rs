@@ -1,5 +1,5 @@
 use serde::{de, Serialize};
-use std::{fs, io, path::Path};
+use std::{fs, io, path::Path, fmt};
 
 pub type Result<T> = std::result::Result<T, FileError>;
 
@@ -70,6 +70,20 @@ pub enum FileError {
     InvalidYAMLSyntax(serde_yaml::Error),
     InvalidJSONSyntax(serde_json::Error),
     IO(io::Error),
+}
+
+impl fmt::Display for FileError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let message : String = match self {
+            FileError::NotFound => "No such file or directory".into(),
+            FileError::UnsupportedExtension => "unsupported file extension (allowed: yaml | yml | json)".into(),
+            FileError::InvalidYAMLSyntax(err) => format!("Invalid YAML syntax: {:?}", err),
+            FileError::InvalidJSONSyntax(err) => format!("Invalid JSON syntax: {:?}", err),
+            FileError::IO(err) => format!("{}", err),
+        };
+
+        write!(f, "{}", message)
+    }
 }
 
 impl From<serde_json::Error> for FileError {
