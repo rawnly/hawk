@@ -62,3 +62,16 @@ pub fn list_dirs(path: &Path) -> Vec<PathBuf> {
             .collect(),
     }
 }
+
+pub fn list_files(path: &Path) -> Vec<PathBuf> {
+    match fs::read_dir(path) {
+        Err(_) => Vec::new(),
+        Ok(content) => content
+            .filter_map(move |p| match p {
+                Ok(entry) => Some(entry.path()),
+                _ => None,
+            })
+            .filter(|p| p.is_file())
+            .collect(),
+    }
+}
