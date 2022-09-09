@@ -38,9 +38,12 @@ pub enum Action {
 #[clap(author, version, about)]
 pub struct Args {
     /// Specify the config file path
-    #[clap(short, long, value_parser, value_hint = clap::ValueHint::FilePath)]
+    #[clap(short, global = true, long, value_parser, value_hint = clap::ValueHint::FilePath)]
     pub config: Option<String>,
 
     #[clap(subcommand)]
     pub action: Option<Action>,
+
+    #[clap(long, value_parser, global = true)]
+    pub scope: Option<String>,
 }
