@@ -1,14 +1,11 @@
 use colored::*;
 use serde::Deserialize;
+use serde::Serialize;
 use std::fmt;
 use std::fs;
 
 use crate::log;
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct PackageJson {
-    pub name: String,
-}
+use crate::models::environment_files::PackageJson;
 
 pub type Result<T> = std::result::Result<T, WorkspaceError>;
 
@@ -18,7 +15,7 @@ pub enum WorkspaceError {
     InvalidPath(String),
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Workspace {
     pub name: String,
     pub path: String,
