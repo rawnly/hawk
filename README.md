@@ -50,7 +50,9 @@ With 10 lines config you have a working monorepo setup.
 
 ## Installation
 
-Until release installation is only available from source code. Make sure to have your rust environment ready, then:
+Download the [latest release](/releases/latest) and move in your `$PATH`
+
+From source: make sure to have your rust environment ready, then:
 
 - Clone the repo
 - Run `cargo build -r` or `make build`
