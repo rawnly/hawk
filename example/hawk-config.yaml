@@ -1,8 +1,8 @@
 workspaces:
-  - name: smartfish
-    path: ./packages/my-app/workflows
-    package_json: ./packages/my-app
-  - name: my-second-app
-    path: ./packages/my-second-app/workflows
-    package_json: null
+- name: the-app
+  path: ./packages/my-app/.github/workflows
+  package_json: ./packages/my-app
+- name: my-second-app
+  path: ./packages/my-second-app/.github/workflows
+  package_json: null
 target: .github/workflows

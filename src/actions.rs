@@ -54,6 +54,8 @@ pub fn init(flags: &InitFlags) -> files::Result<Config> {
     let config = Config::new(".github/workflows");
     config.write(config_path.as_path())?;
 
+    println!("Project setup completed!");
+
     Ok(config)
 }
 
