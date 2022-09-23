@@ -50,7 +50,7 @@ With 10 lines config you have a working monorepo setup.
 
 ## Installation
 
-Download the [latest release](/releases/latest) and move in your `$PATH`
+Download the [latest release](https://github.com/rawnly/hawk/releases/latest) and move in your `$PATH`
 
 From source: make sure to have your rust environment ready, then:
 
