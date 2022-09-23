@@ -52,7 +52,8 @@ With 10 lines config you have a working monorepo setup.
 
 Download the [latest release](https://github.com/rawnly/hawk/releases/latest) and move in your `$PATH`
 
-From source: make sure to have your rust environment ready, then:
+### From source
+make sure to have your rust environment ready, then:
 
 - Clone the repo
 - Run `cargo build -r` or `make build`
