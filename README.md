@@ -3,13 +3,29 @@
 Dead simple rust CLI to ease workflows management inside monorepos.
 
 ## Usage
-
 Run `hawk init` to initialize an empty config file. With the `--read-from-env` flag `hawk` will try to
 retrive your `workspaces` from `pnpm-workspace.yaml` or `pacakge.json` workspaces key.
 ~You can also pass `--json` if you want to save the config file as json.~
 
 ```bash
-$ hawk init
+hawk 0.1.4
+
+USAGE:
+    hawk [OPTIONS] [SUBCOMMAND]
+
+OPTIONS:
+    -c, --config <CONFIG>    Specify the config file path
+    -h, --help               Print help information
+        --scope <SCOPE>      Specify which workspaces files copy / watch Usage: --scope
+                             <workspace-name>
+    -V, --version            Print version information
+
+SUBCOMMANDS:
+    clean    Delete generated files
+    copy     Copy files to the `target` directory
+    help     Print this message or the help of the given subcommand(s)
+    init     Initialize a repository
+    list     List workflows in the `target` directory
 ```
 
 ## Example
