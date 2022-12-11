@@ -31,14 +31,14 @@ pub enum Action {
     Init(InitFlags),
 
     /// Copy files to the `target` directory
-    Copy(CopyFlags),
+    Copy,
 
     /// List workflows in the `target` directory
     List,
 }
 
 #[derive(Parser, Clone, Debug)]
-#[clap(author, version, about)]
+#[clap(author, version, about, name = "hawk")]
 pub struct Args {
     /// Specify the config file path
     #[clap(short, global = true, long, value_parser, value_hint = clap::ValueHint::FilePath)]
@@ -51,4 +51,7 @@ pub struct Args {
     /// Usage: --scope <workspace-name>
     #[clap(long, value_parser, global = true)]
     pub scope: Option<String>,
+
+    #[clap(global = true, short, long, value_parser, default_value_t = false)]
+    pub watch: bool,
 }

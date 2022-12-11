@@ -4,7 +4,7 @@ use std::path::Path;
 
 use crate::cli::InitFlags;
 use crate::models::config::Config;
-use crate::models::environment_files::list_files;
+use crate::models::environment_files::{is_empty_dir, list_files};
 use crate::models::files;
 use crate::models::files::*;
 use crate::models::workflow::Workflow;
@@ -12,7 +12,9 @@ use crate::models::workspace::Workspace;
 use crate::utils;
 
 pub fn list(workspace: &Workspace, target: &str) {
-    list_files(Path::new(target))
+    let t = Path::new(target);
+
+    list_files(t)
         .iter()
         .filter(|f| {
             utils::is_workflow_file(f)
@@ -24,7 +26,7 @@ pub fn list(workspace: &Workspace, target: &str) {
         })
         .map(|f| {
             (
-                Workflow::load(f).unwrap(),
+                Workflow::load(f).expect("invalid workflow file"),
                 f.file_name().unwrap().to_str().unwrap_or(""),
             )
         })

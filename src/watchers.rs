@@ -57,7 +57,7 @@ pub fn watch_sync(workspace: Workspace, target: &str) -> notify::Result<()> {
                 }
 
                 match event.kind {
-                    EventKind::Remove(_) => utils::remove_file(path, target, &workspace.name)?,
+                    EventKind::Remove(f) => utils::remove_file(path, target, &workspace.name)?,
                     EventKind::Create(CreateKind::File)
                     | EventKind::Modify(ModifyKind::Data(DataChange::Content)) => {
                         utils::copy_file(path, target, &workspace.name)?
