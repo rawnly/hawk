@@ -15,7 +15,7 @@ pub fn list(workspace: &Workspace, target: &str) {
     list_files(Path::new(target))
         .iter()
         .filter(|f| {
-            utils::is_workflow_file(*f)
+            utils::is_workflow_file(f)
                 && f.file_name()
                     .unwrap()
                     .to_str()
