@@ -1,5 +1,7 @@
 [package]
 name = "hawk"
+description = "Dead simple cli to ease github workflows management in monorepos"
+repository = "https://github.com/rawnly/hawk"
 version = "0.1.3"
 edition = "2021"
 license = "MIT"
