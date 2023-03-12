@@ -4,6 +4,14 @@ Dead simple rust CLI to ease workflows management inside monorepos.
 
 ![gif](./assets/out.gif)
 
+## Installation
+
+You can install `hawk` via cargo (homebrew coming soon) or by downloading the [latest binary](/releases/latest)
+
+```sh
+cargo install hawk-cli
+```
+
 ## Usage
 
 Run `hawk init` to initialize an empty config file. With the `--read-from-env` flag `hawk` will try to
