@@ -110,7 +110,7 @@ fn main() -> notify::Result<()> {
                 let target = config.target.clone();
 
                 if !is_first {
-                    println!("");
+                    println!(); // spacer
                 } else {
                     is_first = false;
                 }
