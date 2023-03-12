@@ -1,0 +1,21 @@
+name: hawk
+description: Runs hawk on your project
+
+inputs:
+  config:
+    description: Path to the config file
+    required: false
+    default: hawk-config.yaml
+  scope:
+    description: Specify which workspace files copy
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - uses: dtolnay/rust-toolchain@stable
+    - run: cargo install hawk-cli
+    - run: hawk -c ${{ inputs.config }}
+      if: ${{ inputs.scope }} == ''
+    - run: hawk -c ${{ inputs.config }} --scope ${{ inputs.scope }}
+      if: ${{ inputs.scope }}

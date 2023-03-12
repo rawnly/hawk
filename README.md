@@ -92,10 +92,18 @@ make sure to have your rust environment ready, then:
 
 To setup a new project just run `hawk init`. If you're in a `node` environment you can pass the `--read-from-env` flag to generate config based on the monorepo configuration.
 
+## Run in the CI
+
+```yaml
+- uses: rawnly/hawk@v0.1.4
+  with:
+    config: hawk-config.yaml
+```
+
 ## Features
 
 - [x] File watching
 - [x] Cleanup `workflows` folder from generated files.
 - [x] Custom configuration
 - [x] Generate config from `pnpm-workspace.yaml` and yarns `package.json:workspaces`
-- [ ] Create an action to automate this process. (so the user can update a workflow, push and get the generated one updated automatically)
+- [x] Create an action to automate this process. (so the user can update a workflow, push and get the generated one updated automatically)
