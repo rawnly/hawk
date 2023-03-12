@@ -8,7 +8,7 @@ retrive your `workspaces` from `pnpm-workspace.yaml` or `pacakge.json` workspace
 ~You can also pass `--json` if you want to save the config file as json.~
 
 ```bash
-hawk 0.1.3
+hawk 0.1.4
 
 USAGE:
     hawk [OPTIONS] [SUBCOMMAND]
