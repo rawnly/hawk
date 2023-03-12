@@ -1,10 +1,11 @@
 //! src/main.rs
-use hawk::actions;
-use hawk::cli::{Action, Args};
-use hawk::log;
-use hawk::models::config::Config;
-use hawk::models::files::File;
-use hawk::watchers;
+use hawk_cli::actions;
+use hawk_cli::cli::{Action, Args};
+use hawk_cli::log;
+use hawk_cli::models::config::Config;
+use hawk_cli::models::environment_files::is_empty_dir;
+use hawk_cli::models::files::File;
+use hawk_cli::watchers;
 
 use clap::Parser;
 use colored::*;
@@ -29,26 +30,6 @@ fn main() -> notify::Result<()> {
     }
 
     match args.action {
-        None => {
-            let config: Config = Config::load(path).expect("Could not read config file");
-
-            for workspace in config.workspaces {
-                if let Some(scope) = &args.scope {
-                    if scope != &workspace.name {
-                        continue;
-                    }
-                }
-
-                println!(
-                    "Copying [{}]({}) to {}",
-                    workspace.name.blue(),
-                    workspace.path.underline().dimmed(),
-                    config.target.blue()
-                );
-
-                actions::copy(&workspace, &config.target)?;
-            }
-        }
         Some(Action::Init(f)) => {
             if let Err(err) = actions::init(&f) {
                 log::error("An init error has occurred", err)
@@ -56,6 +37,18 @@ fn main() -> notify::Result<()> {
         }
         Some(Action::Clean) => {
             let config: Config = Config::load(path).expect("Could not read config file");
+
+            let target = Path::new(&config.target);
+
+            if !target.exists() {
+                println!("Invalid path {}", &config.target.underline().blue());
+                return Ok(());
+            }
+
+            if is_empty_dir(target) {
+                println!("Empty directory: {}", &config.target.underline().blue());
+                return Ok(());
+            }
 
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
@@ -71,6 +64,18 @@ fn main() -> notify::Result<()> {
             let config: Config = Config::load(path).expect("Could not read config file");
             let target = &config.target;
 
+            let p = Path::new(target);
+
+            if !p.exists() {
+                println!("Invalid path {}", target.underline().blue());
+                return Ok(());
+            }
+
+            if is_empty_dir(p) {
+                println!("Empty directory: {}", target.underline().blue());
+                return Ok(());
+            }
+
             for workspace in &config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
@@ -81,11 +86,11 @@ fn main() -> notify::Result<()> {
                 actions::list(workspace, target);
             }
         }
-        Some(Action::Copy(f)) => {
+        _ => {
             let config: Config = Config::load(path).expect("Could not read config file");
 
             let handle = std::thread::spawn(move || {
-                if !f.watch {
+                if !args.watch {
                     return;
                 }
 
@@ -94,6 +99,7 @@ fn main() -> notify::Result<()> {
                 }
             });
 
+            let mut is_first = true;
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
@@ -103,9 +109,29 @@ fn main() -> notify::Result<()> {
 
                 let target = config.target.clone();
 
+                if !is_first {
+                    println!(); // spacer
+                } else {
+                    is_first = false;
+                }
+
+                if args.watch {
+                    println!(
+                        "Watching {} {}",
+                        workspace.name.bold().yellow(),
+                        format!("({})", workspace.path).dimmed()
+                    );
+                } else {
+                    println!(
+                        "{} {}",
+                        workspace.name.bold().yellow(),
+                        format!("({})", workspace.path).dimmed()
+                    )
+                }
+
                 actions::copy(&workspace, &target)?;
 
-                if f.watch {
+                if args.watch {
                     std::thread::spawn(move || {
                         if let Err(err) = watchers::watch_sync(workspace, &target) {
                             log::error("Something went wrong:", err)

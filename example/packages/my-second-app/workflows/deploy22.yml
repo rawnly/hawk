@@ -4,4 +4,3 @@ on:
 jobs:
   deploy:
     - uses: actions/checkout@v3
-    - uses: rawnly/actions@v2

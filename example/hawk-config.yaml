@@ -1,8 +1,13 @@
+target: .github/workflows
+whitelist:
+  - "my-workflow-*.yml"
 workspaces:
-  - name: smartfish
+  - name: myapp
     path: ./packages/my-app/workflows
     package_json: ./packages/my-app
+    # App name used to compose filename ({appName}--{workflowName}.yml)
   - name: my-second-app
+    # Specify where are stored your workflows
     path: ./packages/my-second-app/workflows
+    # Tell hawk if there's a manifest and where's it
     package_json: null
-target: .github/workflows
