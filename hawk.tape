@@ -53,18 +53,44 @@ Require hawk
 Set Shell "bash"
 Set Theme TokyoNight 
 
+Type "# Example Usage"
+Sleep 500ms
+Enter
 Sleep 2s
+
 Type "cd e"
 Tab
-Sleep 1s
+Sleep 500ms
 Enter
-Sleep 1.5s
-Type "hawk"
-Sleep 750ms
-Type " -V"
+Sleep 1s
+
+Type "hawk list"
+Sleep 500ms
+Enter
+Sleep 1s
+
+Type "tree -a .github"
+Sleep 500ms
 Enter
 Sleep 2s
-Type "hawk "
+
+Type "clear"
+Sleep 500ms
 Enter
-Sleep 5s
+Sleep 2s
+
+Type "hawk "
+Sleep 500ms
+Enter
+Sleep 2s
+
+Type "hawk list"
+Sleep 500ms
+Enter
+Sleep 2s
+
+Type "tree -a .github"
+Sleep 500ms
+Enter
+Sleep 4s
 
