@@ -2,13 +2,16 @@
 
 Dead simple rust CLI to ease workflows management inside monorepos.
 
+![gif](./assets/out.gif)
+
 ## Usage
+
 Run `hawk init` to initialize an empty config file. With the `--read-from-env` flag `hawk` will try to
 retrive your `workspaces` from `pnpm-workspace.yaml` or `pacakge.json` workspaces key.
 ~You can also pass `--json` if you want to save the config file as json.~
 
 ```bash
-hawk 0.1.3
+hawk 0.1.4
 
 USAGE:
     hawk [OPTIONS] [SUBCOMMAND]
@@ -69,6 +72,7 @@ With 10 lines config you have a working monorepo setup.
 Download the [latest release](https://github.com/rawnly/hawk/releases/latest) and move in your `$PATH`
 
 ### From source
+
 make sure to have your rust environment ready, then:
 
 - Clone the repo

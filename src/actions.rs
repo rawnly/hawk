@@ -12,7 +12,9 @@ use crate::models::workspace::Workspace;
 use crate::utils;
 
 pub fn list(workspace: &Workspace, target: &str) {
-    list_files(Path::new(target))
+    let t = Path::new(target);
+
+    list_files(t)
         .iter()
         .filter(|f| {
             utils::is_workflow_file(f)
@@ -24,7 +26,7 @@ pub fn list(workspace: &Workspace, target: &str) {
         })
         .map(|f| {
             (
-                Workflow::load(f).unwrap(),
+                Workflow::load(f).expect("invalid workflow file"),
                 f.file_name().unwrap().to_str().unwrap_or(""),
             )
         })
@@ -84,6 +86,7 @@ pub fn clean(workspace: Workspace, target: &str) -> std::io::Result<()> {
 }
 
 pub fn copy(workspace: &Workspace, target: &str) -> notify::Result<()> {
+    let mut copied = 0;
     let mut skipped = 0;
 
     if let Ok(content) = fs::read_dir(&workspace.path) {
@@ -93,20 +96,19 @@ pub fn copy(workspace: &Workspace, target: &str) -> notify::Result<()> {
                     let is_workflow = utils::is_workflow_file(&path.path());
 
                     if is_workflow {
-                        utils::copy_file(&path.path(), target, &workspace.name)?
+                        utils::copy_file(&path.path(), target, &workspace.name)?;
+                        copied += 1;
                     } else {
-                        println!("Skipping: {:?} {}", path.path().display(), is_workflow);
                         skipped += 1;
                     }
                 }
-                Err(err) => println!("failed to copy: {}", err),
+                Err(err) => println!("Failed to copy: {}", err),
             }
         }
     }
 
-    if skipped > 0 {
-        println!("Skipped {} files.", skipped);
-    }
+    println!("{} skipped", skipped.to_string().yellow());
+    println!("{} copied", copied.to_string().green());
 
     Ok(())
 }

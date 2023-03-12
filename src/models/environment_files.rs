@@ -3,8 +3,9 @@ use std::{
     fs,
     path::{Path, PathBuf},
 };
+use walkdir::WalkDir;
 
-use crate::models::files::File;
+use crate::{models::files::File, utils::is_workflow_file};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct PackageJson {
@@ -50,28 +51,35 @@ pub fn search_file(search_path: &str, filename: &str) -> Option<PathBuf> {
     }
 }
 
+pub fn is_empty_dir(path: &Path) -> bool {
+    let count = WalkDir::new(path)
+        .into_iter()
+        .filter(|r| r.as_ref().map_or(false, |e| is_workflow_file(e.path())))
+        .count();
+
+    count == 0
+}
+
 pub fn list_dirs(path: &Path) -> Vec<PathBuf> {
-    match fs::read_dir(path) {
-        Err(_) => Vec::new(),
-        Ok(content) => content
-            .filter_map(move |p| match p {
-                Ok(entry) => Some(entry.path()),
-                _ => None,
-            })
-            .filter(|p| p.is_dir())
-            .collect(),
-    }
+    WalkDir::new(path)
+        .into_iter()
+        .filter_map(move |p| match p {
+            Ok(entry) => Some(entry),
+            _ => None,
+        })
+        .filter(|p| p.path().is_dir())
+        .map(|f| PathBuf::from(f.path()))
+        .collect()
 }
 
 pub fn list_files(path: &Path) -> Vec<PathBuf> {
-    match fs::read_dir(path) {
-        Err(_) => Vec::new(),
-        Ok(content) => content
-            .filter_map(move |p| match p {
-                Ok(entry) => Some(entry.path()),
-                _ => None,
-            })
-            .filter(|p| p.is_file())
-            .collect(),
-    }
+    WalkDir::new(path)
+        .into_iter()
+        .filter_map(move |p| match p {
+            Ok(entry) => Some(entry),
+            _ => None,
+        })
+        .filter(|p| p.path().is_file())
+        .map(|f| PathBuf::from(f.path()))
+        .collect()
 }

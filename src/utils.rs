@@ -44,8 +44,8 @@ pub fn is_workflow_file(filepath: &Path) -> bool {
         Some(ext) => ext.eq("yaml") || ext.eq("yml"),
     };
 
-    if let Err(err) = Workflow::load(filepath) {
-        panic!("[{}] An error has occurred: {}", filepath.display(), err);
+    if Workflow::load(filepath).is_err() {
+        return false;
     }
 
     is_yaml
