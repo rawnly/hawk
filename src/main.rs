@@ -99,6 +99,7 @@ fn main() -> notify::Result<()> {
                 }
             });
 
+            let mut is_first = true;
             for workspace in config.workspaces {
                 if let Some(scope) = &args.scope {
                     if scope != &workspace.name {
@@ -108,12 +109,26 @@ fn main() -> notify::Result<()> {
 
                 let target = config.target.clone();
 
-                println!(
-                    "{} > Copying contents of {} to {}",
-                    workspace.name.on_yellow().black(),
-                    workspace.path.underline().dimmed(),
-                    config.target.blue()
-                );
+                if !is_first {
+                    println!("");
+                } else {
+                    is_first = false;
+                }
+
+                if args.watch {
+                    println!(
+                        "Watching {} {}",
+                        workspace.name.bold().yellow(),
+                        format!("({})", workspace.path).dimmed()
+                    );
+                } else {
+                    println!(
+                        "{} {}",
+                        workspace.name.bold().yellow(),
+                        format!("({})", workspace.path).dimmed()
+                    )
+                }
+
                 actions::copy(&workspace, &target)?;
 
                 if args.watch {

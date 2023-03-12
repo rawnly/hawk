@@ -54,7 +54,7 @@ pub fn search_file(search_path: &str, filename: &str) -> Option<PathBuf> {
 pub fn is_empty_dir(path: &Path) -> bool {
     let count = WalkDir::new(path)
         .into_iter()
-        .filter_entry(|e| is_workflow_file(e.path()))
+        .filter(|r| r.as_ref().map_or(false, |e| is_workflow_file(e.path())))
         .count();
 
     count == 0

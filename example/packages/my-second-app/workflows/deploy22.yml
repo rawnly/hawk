@@ -1,0 +1,6 @@
+name: My second workflow
+on:
+  push:
+jobs:
+  deploy:
+    - uses: actions/checkout@v3

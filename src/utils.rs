@@ -46,7 +46,6 @@ pub fn is_workflow_file(filepath: &Path) -> bool {
 
     if let Err(_) = Workflow::load(filepath) {
         return false;
-        // panic!("[{}] An error has occurred: {}", filepath.display(), err);
     }
 
     is_yaml
