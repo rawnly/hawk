@@ -95,7 +95,7 @@ To setup a new project just run `hawk init`. If you're in a `node` environment y
 ## Run in the CI
 
 ```yaml
-- uses: rawnly/hawk@v0.1.4
+- uses: rawnly/hawk@main
   with:
     config: hawk-config.yaml
 ```
