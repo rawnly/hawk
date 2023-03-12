@@ -2,3 +2,5 @@
 
 example/.github/workflows/*.yaml
 example/.github/workflows/*.yml
+
+.DS_Store
