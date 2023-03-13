@@ -1,4 +1,4 @@
-name: hawk
+name: run-hawk-cli
 description: Runs hawk on your project
 
 inputs:
